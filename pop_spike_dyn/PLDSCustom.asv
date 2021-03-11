@@ -29,6 +29,18 @@ for tr = 1: Trials
     train(tr).T = T;
 end
 
+% % split training set
+% for tr = 1: train_trials
+%     train(tr).y = transpose(reshape(relative_response(tr, :), [150, 14]));
+%     train(tr).T = T;
+% end
+
+% % split testing set
+% for tr = 1: test_trials
+%     test(tr).y = transpose(reshape(relative_response(train_trials + tr, :), [150, 14]));
+%     test(tr).T = T;
+% end
+
 %% 
 seq = train;
 params = [];
@@ -52,35 +64,35 @@ figure;
 plot(varBound)
 title('expected log-likelihood as function of EM iterations')
 
-%% plot simulation
+%% make prediction
+% 
+% pred_psth = zeros(yDim, T);
+% for tr = 1: Trials
+%     x = zeros(xDim, T);
+%     y = zeros(yDim, T);
+%     spikes = zeros(yDim, T);
+%     x(:, 1) = mvnrnd(params.model.x0, (params.model.Q0 + params.model.Q0.') / 2);
+%     y(:, 1) = exp(params.model.C * x(:, 1) + params.model.d);
+%     spikes(:, 1) = poissrnd(y(:, 1));
+%     for t = 2: T
+%         x(:, t) = mvnrnd(params.model.A * x(:, t - 1), params.model.Q);
+%         y(:, t) = exp(params.model.C * x(:, t) + params.model.d);
+%         spikes(:, t) = poissrnd(y(:, t));
+%     end
+%     pred_psth = pred_psth + spikes;
+% end
+% 
+% pred_psth = pred_psth / Trials;
+% 
+% figure
+% plot(pred_psth(3, :));
+% hold on;
+% plot(data.psth_struct.LEFT.event_9.sig009a.psth);
+% legend("predicted psth", "true psth");
+% title("Comparision between predicted psth and true psth of neuron sig009a");
 
-pred_psth = zeros(yDim, T);
-for tr = 1: Trials
-    x = zeros(xDim, T);
-    y = zeros(yDim, T);
-    spikes = zeros(yDim, T);
-    x(:, 1) = mvnrnd(params.model.x0, (params.model.Q0 + params.model.Q0.') / 2);
-    y(:, 1) = exp(params.model.C * x(:, 1) + params.model.d);
-    spikes(:, 1) = poissrnd(y(:, 1));
-    for t = 2: T
-        x(:, t) = mvnrnd(params.model.A * x(:, t - 1), params.model.Q);
-        y(:, t) = exp(params.model.C * x(:, t) + params.model.d);
-        spikes(:, t) = poissrnd(y(:, t));
-    end
-    pred_psth = pred_psth + spikes;
-end
 
-pred_psth = pred_psth / Trials;
-
-figure
-plot(pred_psth(1, :));
-hold on;
-plot(data.psth_struct.LEFT.event_9.sig002a.psth(1: T));
-legend("predicted psth", "true psth");
-title("1st comparision between predicted psth and true psth of neuron sig002a");
-
-
-%% make future prediction and compute spike count error
+%% compute sipke count error on predicted results
 % [seq varBound] = params.model.inferenceHandle(params,test);
 
 prediction = zeros(Trials, yDim, 50);
@@ -107,30 +119,17 @@ end
 ave_trial_error = ave_trial_error / Trials / 50;
 ave_trial_count = ave_trial_count / Trials;
 ave_bin_error = ave_bin_error / Trials;
-
-%% plot future prediction
-
+%%
 figure
-a = squeeze(sum(prediction(:, 1, :), 1)) / Trials;
-b = data.psth_struct.LEFT.event_9.sig002a.psth(1: 100)';
+a = squeeze(sum(prediction(:, 2, :), 1)) / Trials;
+b = data.psth_struct.LEFT.event_9.sig002c.psth(1: 100)';
 plot(cat(1, b, a));
 hold on;
-plot(data.psth_struct.LEFT.event_9.sig002a.psth);
+plot(data.psth_struct.LEFT.event_9.sig002c.psth);
 hold on;
-plot(cat(1, zeros(100, 1), ave_bin_error(1, :)'));
-legend("predicted psth", "true psth", "average error");
-title("2nd Comparision between predicted psth and true psth of neuron sig002a");
+plot(cat(1, zeros(100), 
+legend("predicted psth", "true psth");
+title("Comparision between predicted psth and true psth of neuron sig002c");
 
-%% 
-figure    
-xlabel('1st latent variable')
-ylabel('2nd latent variable')
-zlabel('3rd latent variable')
-for tr = 1: Trials
-    x1 = seq(tr).posterior.xsm(1, :);
-    x2 = seq(tr).posterior.xsm(2, :);
-    x3 = seq(tr).posterior.xsm(3, :);
-    
-    plot3(x1,x2,x3,'g');
-    hold on;
-end
+figure
+plot(

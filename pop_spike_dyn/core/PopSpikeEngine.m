@@ -11,7 +11,7 @@ error('not implemented yet')
 %opts.prior: options for prior
 %opts.algo: algorithm options
 
-%
+% 
 %dat.y spike trains
 %dat.s stimulus/history features
 %dat.u stimulus/history features
@@ -34,8 +34,8 @@ error('not implemented yet')
 
 
 %model:
-%y_t= Cx_t +sum(D.*s_t,2) +Eu_t+ nu_t (for Gaussian)
-%x_t=Ax_{t-1}+Bh_t+ epsilon_t
+%y_t= Cx_t + sum(D.*s_t,2) + Eu_t + nu_t (for Gaussian)
+%x_t = Ax_{t-1} + Bh_t + epsilon_t
 
 %s_t: stimulus not shared across neurons, i.e. Ds_t '=' sum(D.*s_t,2)
 %u_t: shared stimulus across neurons

@@ -66,18 +66,18 @@ for ii=1:maxIter
 
     fprintf('\rIteration: %i     Elapsed time (EStep): %d     Elapsed time (MStep): %d     Variational Bound: %d',ii,EStepTimes(ii),MStepTimes(ii),varBound(ii))
 
-    % check termination criteria
-    if params.opts.algorithmic.EMIterations.abortDecresingVarBound && (varBound(ii)<varBoundMax)    % check if varBound is increasing!
-       NOWparams = PREVparams;	   % parameter backtracking
-       fprintf('\n ');
-       warning('Variational lower bound is decreasing, aborting EM & backtracking');
-       break;
-    end
-
-    if params.opts.algorithmic.EMIterations.abortDecresingVarBound && ((abs(varBound(ii)-varBoundMax)/Tall)<progTolvarBound)
-       fprintf('\nReached progTolvarBound for EM, aborting')
-       break
-    end	     
+%     % check termination criteria
+%     if params.opts.algorithmic.EMIterations.abortDecresingVarBound && (varBound(ii)<varBoundMax)    % check if varBound is increasing!
+%        NOWparams = PREVparams;	   % parameter backtracking
+%        fprintf('\n ');
+%        warning('Variational lower bound is decreasing, aborting EM & backtracking');
+%        break;
+%     end
+% 
+%     if params.opts.algorithmic.EMIterations.abortDecresingVarBound && ((abs(varBound(ii)-varBoundMax)/Tall)<progTolvarBound)
+%        fprintf('\nReached progTolvarBound for EM, aborting')
+%        break
+%     end	     
 
     if (cputime-EMbeginTime)>maxCPUTime
        fprintf('\nReached maxCPUTime for EM, aborting')

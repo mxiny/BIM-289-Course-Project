@@ -82,3 +82,6 @@ figure
 plot(tp.model.d,params.model.d,'rx');
 title('true vs estimated bias parameters')
 
+
+
+
